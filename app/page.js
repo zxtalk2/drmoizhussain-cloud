@@ -1,66 +1,103 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import Navbar from "../components/Navbar";
+import ImageSlider from "../components/ImageSlider";
+import About from "../components/About";
+import Services from "../components/Services";
+import Gallery from "../components/Gallery";
+import Testimonials from "../components/Testimonials";
+import Footer from "../components/Footer";
+import WhatsAppButton from "../components/WhatsAppButton";
+import Link from "next/link";
 
 export default function Home() {
+  // Structured Data for Organization
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: "The Institute of Mind Sciences",
+    alternateName: "Dr. Moiz Hussain Institute",
+    url: "https://moizhussain.com",
+    logo: "https://moizhussain.com/logo.png",
+    description:
+      "Transform your life with expert workshops and personal consultations in mind sciences and classical yoga.",
+    founder: {
+      "@type": "Person",
+      name: "Dr. Moiz Hussain",
+      jobTitle: "Founder & Mind Sciences Expert",
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "F-14/2A, Block-9 Clifton",
+      addressLocality: "Karachi",
+      postalCode: "75500",
+      addressCountry: "PK",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+92-21-35836448",
+      contactType: "customer service",
+      email: "info@moizhussain.com",
+      areaServed: "PK",
+      availableLanguage: ["en", "ur"],
+    },
+    sameAs: [
+      "https://www.facebook.com/drmoizhussain",
+      "https://www.youtube.com/@drmoizhussain",
+    ],
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+    <>
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+
+      <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden">
+        <Navbar />
+        <ImageSlider />
+        <WhatsAppButton />
+
+        <div className="relative">
+          <About />
+          <div className="absolute bottom-10 left-0 w-full flex justify-center">
+            <Link
+              href="/about"
+              className="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+              Read More About Us
+            </Link>
+          </div>
+        </div>
+
+        <div className="relative">
+          <Services />
+          <div className="absolute bottom-10 left-0 w-full flex justify-center">
+            <Link
+              href="/services"
+              className="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              View All Services
+            </Link>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="relative">
+          <Gallery />
+          <div className="absolute bottom-10 left-0 w-full flex justify-center">
+            <Link
+              href="/gallery"
+              className="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors"
+            >
+              View Full Gallery
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+
+        <Testimonials />
+        <Footer />
+      </div>
+    </>
   );
 }
