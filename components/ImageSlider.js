@@ -64,7 +64,15 @@ export default function ImageSlider() {
   }, [slides]);
 
   if (loading) {
-    return <div className="h-screen w-full bg-black" />;
+    return (
+      <div className="h-screen w-full bg-black flex flex-col items-center justify-center">
+        <div className="relative">
+          {/* Spinner */}
+          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+        </div>
+        <p className="mt-6 text-white/70 text-lg">Loading...</p>
+      </div>
+    );
   }
 
   return (
