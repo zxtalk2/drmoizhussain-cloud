@@ -24,31 +24,56 @@ export default function ImageSlider() {
         const res = await fetch("/api/slider");
         const data = await res.json();
         if (data && data.length > 0) {
-          setSlides(data);
+          // Show first slide immediately
+          setSlides([data[0]]);
+          setLoading(false);
+
+          // Load remaining slides in background
+          if (data.length > 1) {
+            setTimeout(() => {
+              setSlides(data);
+            }, 100);
+          }
         } else {
           // Fallback to default images if no data
-          setSlides(
-            images.map((url, index) => ({
-              imageUrl: url,
-              title: "Unlock Your True Potential",
-              description:
-                "Expert consultation for personal and professional growth with Dr. Moiz Hussain. Discover the power of your mind.",
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Failed to fetch slides:", error);
-        // Fallback on error
-        setSlides(
-          images.map((url, index) => ({
+          const fallbackSlides = images.map((url, index) => ({
             imageUrl: url,
             title: "Unlock Your True Potential",
             description:
               "Expert consultation for personal and professional growth with Dr. Moiz Hussain. Discover the power of your mind.",
-          }))
-        );
-      } finally {
+          }));
+
+          // Show first fallback slide immediately
+          setSlides([fallbackSlides[0]]);
+          setLoading(false);
+
+          // Load remaining fallback slides
+          if (fallbackSlides.length > 1) {
+            setTimeout(() => {
+              setSlides(fallbackSlides);
+            }, 100);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch slides:", error);
+        // Fallback on error
+        const fallbackSlides = images.map((url, index) => ({
+          imageUrl: url,
+          title: "Unlock Your True Potential",
+          description:
+            "Expert consultation for personal and professional growth with Dr. Moiz Hussain. Discover the power of your mind.",
+        }));
+
+        // Show first fallback slide immediately
+        setSlides([fallbackSlides[0]]);
         setLoading(false);
+
+        // Load remaining fallback slides
+        if (fallbackSlides.length > 1) {
+          setTimeout(() => {
+            setSlides(fallbackSlides);
+          }, 100);
+        }
       }
     };
 
