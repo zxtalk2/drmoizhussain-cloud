@@ -14,7 +14,7 @@ export default function AdminNewsletterPage() {
     try {
       const res = await fetch("/api/newsletter");
       const data = await res.json();
-      setSubscribers(data);
+      setSubscribers(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch subscribers", error);
     } finally {
@@ -66,7 +66,6 @@ export default function AdminNewsletterPage() {
           break;
       }
 
-      // Use file-saver library for reliable downloads
       const blob = new Blob([content], { type: mimeType });
       saveAs(blob, filename);
     } catch (error) {

@@ -1,5 +1,5 @@
 {
-  "name": "db-pratice06",
+  "name": "dr-moiz-hussain-website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@next/third-parties": "^16.0.5",
-    "dotenv": "^17.2.3",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.23.24",
     "mongoose": "^9.0.0",

@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { YouTubeEmbed } from "@next/third-parties/google";
 
 export default function Gallery() {
   const [videos, setVideos] = useState([]);
@@ -12,7 +11,7 @@ export default function Gallery() {
       try {
         const res = await fetch("/api/gallery");
         const data = await res.json();
-        setVideos(data);
+        setVideos(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to fetch videos", error);
       } finally {
@@ -70,7 +69,13 @@ export default function Gallery() {
               className="group relative"
             >
               <div className="aspect-video bg-black relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_50px_rgba(138,43,226,0.3)] group-hover:border-primary/50 transition-all duration-500">
-                <YouTubeEmbed videoid={video.youtubeId} params="controls=1" />
+                <iframe
+                  src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                  title={video.title || "YouTube video"}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
               </div>
               {video.title && (
                 <div className="mt-4">
