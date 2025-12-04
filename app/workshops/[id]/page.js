@@ -35,7 +35,10 @@ export default function WorkshopDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: "var(--background)" }}
+      >
         <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -46,7 +49,13 @@ export default function WorkshopDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: "var(--background)",
+        color: "var(--foreground)",
+      }}
+    >
       <Navbar />
 
       <div className="pt-32 pb-20 px-[5%]">
@@ -54,7 +63,8 @@ export default function WorkshopDetailPage() {
           {/* Back Button */}
           <Link
             href="/workshops"
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8"
+            className="inline-flex items-center gap-2 hover:text-primary transition-colors mb-8"
+            style={{ color: "var(--foreground)", opacity: 0.7 }}
           >
             <svg
               className="w-5 h-5"
@@ -102,24 +112,42 @@ export default function WorkshopDetailPage() {
               )}
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h1
+              className="text-4xl md:text-5xl font-bold mb-4"
+              style={{ color: "var(--foreground)" }}
+            >
               {workshop.title}
             </h1>
           </div>
 
           {/* Workshop Content */}
-          <div className="bg-secondary rounded-2xl p-8 border border-white/10">
-            <div className="prose prose-invert max-w-none">
-              <h2 className="text-2xl font-bold text-white mb-4">
+          <div
+            className="rounded-2xl p-8"
+            style={{
+              backgroundColor: "var(--secondary)",
+              border: "1px solid var(--secondary)",
+            }}
+          >
+            <div className="prose max-w-none">
+              <h2
+                className="text-2xl font-bold mb-4"
+                style={{ color: "var(--foreground)" }}
+              >
                 About This Workshop
               </h2>
-              <p className="text-gray-300 text-lg leading-relaxed whitespace-pre-line">
+              <p
+                className="text-lg leading-relaxed whitespace-pre-line"
+                style={{ color: "var(--foreground)", opacity: 0.8 }}
+              >
                 {workshop.description ||
                   "No detailed description available for this workshop."}
               </p>
 
               {workshop.link && (
-                <div className="mt-8 pt-8 border-t border-white/10">
+                <div
+                  className="mt-8 pt-8"
+                  style={{ borderTop: "1px solid var(--secondary)" }}
+                >
                   <a
                     href={workshop.link}
                     target="_blank"
@@ -148,10 +176,16 @@ export default function WorkshopDetailPage() {
 
           {/* Contact CTA */}
           <div className="mt-12 bg-gradient-to-br from-primary/20 to-purple-600/20 rounded-2xl p-8 border border-primary/30">
-            <h3 className="text-2xl font-bold text-white mb-4">
+            <h3
+              className="text-2xl font-bold mb-4"
+              style={{ color: "var(--foreground)" }}
+            >
               Interested in This Workshop?
             </h3>
-            <p className="text-gray-300 mb-6">
+            <p
+              className="mb-6"
+              style={{ color: "var(--foreground)", opacity: 0.8 }}
+            >
               Contact us to learn more about upcoming sessions or to book this
               workshop for your organization.
             </p>

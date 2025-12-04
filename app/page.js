@@ -54,14 +54,20 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
 
-      <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden">
+      <div
+        className="flex flex-col min-h-screen overflow-x-hidden"
+        style={{
+          backgroundColor: "var(--background)",
+          color: "var(--foreground)",
+        }}
+      >
         <Navbar />
         <ImageSlider />
         <WhatsAppButton />
 
-        <div className="relative">
+        <div className="relative pb-10">
           <About />
-          <div className="absolute bottom-10 left-0 w-full flex justify-center">
+          <div className="flex justify-center mt-1">
             <Link
               href="/about"
               className="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-colors"

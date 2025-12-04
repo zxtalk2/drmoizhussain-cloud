@@ -24,14 +24,23 @@ export const metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: "var(--background)",
+        color: "var(--foreground)",
+      }}
+    >
       <Navbar />
       <div className="pt-20">
         <div className="container mx-auto px-[5%] py-16">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">
             Our Services & Workshops
           </h1>
-          <p className="text-center text-gray-400 max-w-2xl mx-auto mb-16 text-lg">
+          <p
+            className="text-center max-w-2xl mx-auto mb-16 text-lg"
+            style={{ color: "var(--foreground)", opacity: 0.7 }}
+          >
             Explore our wide range of mind science workshops, personal
             consultations, and corporate training programs designed to unlock
             your true potential.

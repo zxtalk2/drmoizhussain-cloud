@@ -48,7 +48,10 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-24 px-[5%] bg-gradient-to-b from-black/50 to-background">
+    <section
+      className="py-24 px-[5%]"
+      style={{ backgroundColor: "var(--secondary)" }}
+    >
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -62,7 +65,10 @@ export default function Testimonials() {
           <h2 className="text-4xl md:text-5xl font-bold mt-3 mb-4 text-gradient">
             Client Success Stories
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p
+            className="max-w-2xl mx-auto opacity-70"
+            style={{ color: "var(--foreground)" }}
+          >
             Hear from those whose lives have been transformed
           </p>
         </motion.div>
@@ -75,7 +81,11 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative p-8 rounded-2xl bg-gradient-to-br from-black/60 to-black/40 border border-white/10 hover:border-primary/50 transition-all duration-500 hover:-translate-y-2"
+              className="group relative p-8 rounded-2xl hover:border-primary/50 transition-all duration-500 hover:-translate-y-2"
+              style={{
+                backgroundColor: "var(--background)",
+                border: "1px solid var(--secondary)",
+              }}
             >
               {/* Quote icon */}
               <div className="absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity duration-300">
@@ -112,13 +122,19 @@ export default function Testimonials() {
               </div>
 
               {/* Quote */}
-              <p className="text-gray-300 italic mb-6 leading-relaxed relative z-10">
+              <p
+                className="italic mb-6 leading-relaxed relative z-10 opacity-80"
+                style={{ color: "var(--foreground)" }}
+              >
                 "{client.quote}"
               </p>
 
               {/* Author */}
               <div className="relative z-10">
-                <p className="text-white font-semibold text-lg">
+                <p
+                  className="font-semibold text-lg"
+                  style={{ color: "var(--foreground)" }}
+                >
                   {client.name}
                 </p>
                 <p className="text-primary text-sm">{client.role}</p>

@@ -16,7 +16,13 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: "var(--background)",
+        color: "var(--foreground)",
+      }}
+    >
       <Navbar />
       <div className="pt-20">
         <div className="container mx-auto px-[5%] py-16">
@@ -24,8 +30,16 @@ export default function AboutPage() {
             About The Institute
           </h1>
           <About />
-          <div className="mt-20 max-w-4xl mx-auto text-gray-300 space-y-6 leading-relaxed">
-            <h2 className="text-3xl font-bold text-white mb-6">Our Mission</h2>
+          <div
+            className="mt-20 max-w-4xl mx-auto space-y-6 leading-relaxed"
+            style={{ color: "var(--foreground)", opacity: 0.8 }}
+          >
+            <h2
+              className="text-3xl font-bold mb-6"
+              style={{ color: "var(--foreground)" }}
+            >
+              Our Mission
+            </h2>
             <p>
               The Institute of Mind Sciences and Classical Yoga is dedicated to
               the research and development of the human mind. Under the

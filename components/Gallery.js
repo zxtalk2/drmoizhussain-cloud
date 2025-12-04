@@ -35,7 +35,8 @@ export default function Gallery() {
   return (
     <section
       id="gallery"
-      className="py-24 px-[5%] bg-gradient-to-b from-background to-black/50"
+      className="py-24 px-[5%]"
+      style={{ backgroundColor: "var(--background)" }}
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
@@ -50,7 +51,10 @@ export default function Gallery() {
           <h2 className="text-4xl md:text-5xl font-bold mt-3 mb-4 text-gradient">
             Video Gallery
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p
+            className="max-w-2xl mx-auto opacity-70"
+            style={{ color: "var(--foreground)" }}
+          >
             Explore our collection of transformative workshops and seminars
           </p>
         </motion.div>
@@ -70,7 +74,10 @@ export default function Gallery() {
               </div>
               {video.title && (
                 <div className="mt-4">
-                  <h3 className="text-lg font-semibold text-white group-hover:text-primary transition-colors duration-300">
+                  <h3
+                    className="text-lg font-semibold group-hover:text-primary transition-colors duration-300"
+                    style={{ color: "var(--foreground)" }}
+                  >
                     {video.title}
                   </h3>
                 </div>

@@ -60,7 +60,8 @@ export default function Footer() {
   return (
     <footer
       id="contact"
-      className="relative bg-gradient-to-b from-background to-[#050505] pt-20 px-[5%] pb-8"
+      className="relative pt-20 px-[5%] pb-8"
+      style={{ backgroundColor: "var(--background)" }}
     >
       {/* Gradient Divider */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
@@ -74,7 +75,10 @@ export default function Footer() {
               <h3 className="text-2xl font-bold text-gradient mb-3">
                 DR. MOIZ
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p
+                className="text-sm leading-relaxed opacity-70"
+                style={{ color: "var(--foreground)" }}
+              >
                 The Institute of Mind Sciences - Unlocking human potential
                 through workshops and seminars since 1986.
               </p>
@@ -102,7 +106,12 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white mb-6 text-lg font-bold">Quick Links</h4>
+            <h4
+              className="mb-6 text-lg font-bold"
+              style={{ color: "var(--foreground)" }}
+            >
+              Quick Links
+            </h4>
             <ul className="space-y-3">
               {[
                 { name: "Home", path: "/" },
@@ -114,7 +123,8 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.path}
-                    className="text-gray-400 hover:text-primary transition-colors duration-300 flex items-center gap-2 group"
+                    className="transition-colors duration-300 flex items-center gap-2 group hover:text-primary"
+                    style={{ color: "var(--foreground)", opacity: 0.7 }}
                   >
                     <span className="w-0 h-px bg-primary group-hover:w-4 transition-all duration-300"></span>
                     {link.name}
@@ -126,8 +136,16 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-white mb-6 text-lg font-bold">Contact Us</h4>
-            <ul className="space-y-4 text-gray-400 text-sm">
+            <h4
+              className="mb-6 text-lg font-bold"
+              style={{ color: "var(--foreground)" }}
+            >
+              Contact Us
+            </h4>
+            <ul
+              className="space-y-4 text-sm"
+              style={{ color: "var(--foreground)", opacity: 0.7 }}
+            >
               <li className="flex items-start gap-3">
                 <svg
                   className="w-5 h-5 text-primary flex-shrink-0 mt-0.5"
@@ -224,8 +242,16 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-white mb-6 text-lg font-bold">Newsletter</h4>
-            <p className="text-gray-400 text-sm mb-4">
+            <h4
+              className="mb-6 text-lg font-bold"
+              style={{ color: "var(--foreground)" }}
+            >
+              Newsletter
+            </h4>
+            <p
+              className="text-sm mb-4 opacity-70"
+              style={{ color: "var(--foreground)" }}
+            >
               Subscribe to get updates on our latest workshops and events.
             </p>
             <form
@@ -238,7 +264,12 @@ export default function Footer() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email"
                 required
-                className="px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
+                className="px-4 py-3 border rounded-lg focus:outline-none focus:border-primary/50 transition-colors"
+                style={{
+                  backgroundColor: "var(--secondary)",
+                  borderColor: "var(--secondary)",
+                  color: "var(--foreground)",
+                }}
               />
               <button
                 type="submit"

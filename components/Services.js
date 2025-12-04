@@ -34,27 +34,10 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="py-24 px-[5%] bg-gradient-to-b from-black/50 to-background"
+      className="py-24 px-[5%]"
+      style={{ backgroundColor: "var(--secondary)" }}
     >
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary text-sm font-semibold tracking-wider uppercase">
-            What We Offer
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 mb-4 text-gradient">
-            Our Services
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Discover our comprehensive range of mind development and wellness
-            programs
-          </p>
-        </motion.div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <motion.div
@@ -63,7 +46,12 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative p-8 rounded-2xl overflow-hidden border border-white/10 bg-gradient-to-br from-black/60 to-black/40 hover:border-primary/50 transition-all duration-500 hover:-translate-y-2"
+              className="group relative p-8 rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-500 hover:-translate-y-2"
+              style={{
+                backgroundColor: "var(--background)",
+                borderWidth: "1px",
+                borderColor: "var(--secondary)",
+              }}
             >
               {/* Gradient glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-purple-600/0 to-primary/0 group-hover:from-primary/10 group-hover:via-purple-600/10 group-hover:to-primary/10 transition-all duration-500"></div>
@@ -88,10 +76,16 @@ export default function Services() {
               </div>
 
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-gradient transition-all duration-300">
+                <h3
+                  className="text-2xl font-bold mb-3 group-hover:text-gradient transition-all duration-300"
+                  style={{ color: "var(--foreground)" }}
+                >
                   {service.title}
                 </h3>
-                <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+                <p
+                  className="leading-relaxed opacity-70"
+                  style={{ color: "var(--foreground)" }}
+                >
                   {service.description}
                 </p>
               </div>

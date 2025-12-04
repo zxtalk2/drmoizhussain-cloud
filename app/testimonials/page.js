@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Toaster, toast } from "react-hot-toast";
+import { useTheme } from "../../components/ThemeProvider";
 
 export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState([]);
@@ -14,6 +15,8 @@ export default function TestimonialsPage() {
     quote: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     fetchTestimonials();
@@ -57,7 +60,13 @@ export default function TestimonialsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        backgroundColor: "var(--background)",
+        color: "var(--foreground)",
+      }}
+    >
       <Navbar />
       <Toaster position="bottom-right" />
 
@@ -70,7 +79,10 @@ export default function TestimonialsPage() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
             Success Stories
           </h1>
-          <p className="text-[#888] max-w-2xl mx-auto mb-8">
+          <p
+            className="max-w-2xl mx-auto mb-8"
+            style={{ color: "var(--foreground)", opacity: 0.6 }}
+          >
             Read what our clients have to say about their transformative
             journeys.
           </p>
@@ -92,14 +104,26 @@ export default function TestimonialsPage() {
               exit={{ opacity: 0, height: 0 }}
               className="max-w-2xl mx-auto mb-16"
             >
-              <div className="bg-[#1a1a1a] p-8 rounded-lg border border-[#333]">
-                <h3 className="text-2xl font-semibold mb-6 text-center">
+              <div
+                className="p-8 rounded-lg"
+                style={{
+                  backgroundColor: "var(--secondary)",
+                  border: "1px solid var(--secondary)",
+                }}
+              >
+                <h3
+                  className="text-2xl font-semibold mb-6 text-center"
+                  style={{ color: "var(--foreground)" }}
+                >
                   Write a Testimonial
                 </h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm text-[#888] mb-2">
+                      <label
+                        className="block text-sm mb-2"
+                        style={{ color: "var(--foreground)", opacity: 0.6 }}
+                      >
                         Name
                       </label>
                       <input
@@ -109,12 +133,20 @@ export default function TestimonialsPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        className="w-full bg-[#0a0a0a] border border-[#333] rounded p-3 text-white focus:border-primary focus:outline-none transition-colors"
+                        className="w-full rounded p-3 focus:border-primary focus:outline-none transition-colors"
+                        style={{
+                          backgroundColor: "var(--background)",
+                          border: "1px solid var(--secondary)",
+                          color: "var(--foreground)",
+                        }}
                         placeholder="Your Name"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-[#888] mb-2">
+                      <label
+                        className="block text-sm mb-2"
+                        style={{ color: "var(--foreground)", opacity: 0.6 }}
+                      >
                         Role (Optional)
                       </label>
                       <input
@@ -123,13 +155,21 @@ export default function TestimonialsPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, role: e.target.value })
                         }
-                        className="w-full bg-[#0a0a0a] border border-[#333] rounded p-3 text-white focus:border-primary focus:outline-none transition-colors"
+                        className="w-full rounded p-3 focus:border-primary focus:outline-none transition-colors"
+                        style={{
+                          backgroundColor: "var(--background)",
+                          border: "1px solid var(--secondary)",
+                          color: "var(--foreground)",
+                        }}
                         placeholder="e.g. Student, Client"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm text-[#888] mb-2">
+                    <label
+                      className="block text-sm mb-2"
+                      style={{ color: "var(--foreground)", opacity: 0.6 }}
+                    >
                       Your Story
                     </label>
                     <textarea
@@ -139,7 +179,12 @@ export default function TestimonialsPage() {
                         setFormData({ ...formData, quote: e.target.value })
                       }
                       rows="4"
-                      className="w-full bg-[#0a0a0a] border border-[#333] rounded p-3 text-white focus:border-primary focus:outline-none transition-colors"
+                      className="w-full rounded p-3 focus:border-primary focus:outline-none transition-colors"
+                      style={{
+                        backgroundColor: "var(--background)",
+                        border: "1px solid var(--secondary)",
+                        color: "var(--foreground)",
+                      }}
                       placeholder="How has your life changed?"
                     ></textarea>
                   </div>
@@ -147,7 +192,11 @@ export default function TestimonialsPage() {
                     <button
                       type="button"
                       onClick={() => setShowForm(false)}
-                      className="w-1/3 bg-[#333] text-white py-3 rounded font-semibold hover:bg-[#444] transition-all"
+                      className="w-1/3 py-3 rounded font-semibold transition-all"
+                      style={{
+                        backgroundColor: "var(--secondary)",
+                        color: "var(--foreground)",
+                      }}
                     >
                       Cancel
                     </button>
@@ -173,22 +222,47 @@ export default function TestimonialsPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-[#1a1a1a] p-8 rounded-lg border border-[#333] flex flex-col"
+              className="p-8 rounded-lg flex flex-col"
+              style={{
+                backgroundColor: "var(--secondary)",
+                border: "1px solid var(--secondary)",
+              }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-[#333] flex items-center justify-center text-primary font-bold text-xl">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-primary font-bold text-xl"
+                  style={{ backgroundColor: "var(--background)" }}
+                >
                   {t.name.charAt(0)}
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg">{t.name}</h4>
-                  <p className="text-sm text-[#666]">{t.role}</p>
+                  <h4
+                    className="font-semibold text-lg"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    {t.name}
+                  </h4>
+                  <p
+                    className="text-sm"
+                    style={{ color: "var(--foreground)", opacity: 0.5 }}
+                  >
+                    {t.role}
+                  </p>
                 </div>
               </div>
-              <p className="text-[#ccc] italic leading-relaxed">"{t.quote}"</p>
+              <p
+                className="italic leading-relaxed"
+                style={{ color: "var(--foreground)", opacity: 0.8 }}
+              >
+                "{t.quote}"
+              </p>
             </motion.div>
           ))}
           {testimonials.length === 0 && (
-            <div className="col-span-full text-center py-12 text-[#666]">
+            <div
+              className="col-span-full text-center py-12"
+              style={{ color: "var(--foreground)", opacity: 0.5 }}
+            >
               No testimonials yet. Be the first to share your story!
             </div>
           )}

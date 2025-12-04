@@ -10,6 +10,14 @@
   --secondary: #1a1a1a;
 }
 
+.light {
+  --background: #f9f9f9;
+  --foreground: #0a0a0a;
+  --primary: #8a2be2;
+  --primary-hover: #7a1cd1;
+  --secondary: #e5e5e5;
+}
+
 * {
   margin: 0;
   padding: 0;
