@@ -14,7 +14,7 @@ export default function AdminTestimonials() {
     try {
       const res = await fetch("/api/admin/testimonials");
       const data = await res.json();
-      setTestimonials(data);
+      setTestimonials(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error("Failed to fetch testimonials");
     } finally {
@@ -62,84 +62,123 @@ export default function AdminTestimonials() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8">
+    <div>
       <Toaster position="top-right" />
-      <h1 className="text-3xl font-bold mb-8 text-primary">
-        Manage Testimonials
-      </h1>
 
-      <div className="bg-[#1a1a1a] rounded-lg border border-[#333] overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-[#111] border-b border-[#333]">
-            <tr>
-              <th className="p-4 text-[#888] font-medium">Name</th>
-              <th className="p-4 text-[#888] font-medium">Role</th>
-              <th className="p-4 text-[#888] font-medium">Message</th>
-              <th className="p-4 text-[#888] font-medium">Status</th>
-              <th className="p-4 text-[#888] font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[#333]">
-            {testimonials.map((t) => (
-              <tr key={t._id} className="hover:bg-[#222] transition-colors">
-                <td className="p-4 font-semibold">{t.name}</td>
-                <td className="p-4 text-[#ccc]">{t.role}</td>
-                <td
-                  className="p-4 text-[#ccc] max-w-md truncate"
-                  title={t.quote}
-                >
-                  {t.quote}
-                </td>
-                <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      t.isApproved
-                        ? "bg-green-900 text-green-300"
-                        : "bg-yellow-900 text-yellow-300"
-                    }`}
-                  >
-                    {t.isApproved ? "Approved" : "Pending"}
-                  </span>
-                </td>
-                <td className="p-4 flex gap-2">
-                  {!t.isApproved && (
-                    <button
-                      onClick={() => handleStatusChange(t._id, true)}
-                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-                    >
-                      Approve
-                    </button>
-                  )}
-                  {t.isApproved && (
-                    <button
-                      onClick={() => handleStatusChange(t._id, false)}
-                      className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm"
-                    >
-                      Hide
-                    </button>
-                  )}
-                  <button
-                    onClick={() => handleDelete(t._id)}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {testimonials.length === 0 && (
-              <tr>
-                <td colSpan="5" className="p-8 text-center text-[#666]">
-                  No testimonials found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white">Manage Testimonials</h1>
+        <p className="text-gray-400 mt-1">
+          Review and manage customer testimonials
+        </p>
       </div>
+
+      {testimonials.length === 0 ? (
+        <div className="bg-[#1a1a1a] p-8 rounded-2xl border border-white/10 text-center">
+          <svg
+            className="w-12 h-12 mx-auto text-gray-500 mb-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
+          </svg>
+          <p className="text-gray-400">No testimonials found.</p>
+        </div>
+      ) : (
+        <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-[#111] border-b border-white/10">
+                <tr>
+                  <th className="p-4 text-gray-400 font-medium text-sm">
+                    Name
+                  </th>
+                  <th className="p-4 text-gray-400 font-medium text-sm">
+                    Role
+                  </th>
+                  <th className="p-4 text-gray-400 font-medium text-sm">
+                    Message
+                  </th>
+                  <th className="p-4 text-gray-400 font-medium text-sm">
+                    Status
+                  </th>
+                  <th className="p-4 text-gray-400 font-medium text-sm">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {testimonials.map((t) => (
+                  <tr
+                    key={t._id}
+                    className="hover:bg-white/5 transition-colors"
+                  >
+                    <td className="p-4 font-semibold text-white">{t.name}</td>
+                    <td className="p-4 text-gray-400">{t.role}</td>
+                    <td
+                      className="p-4 text-gray-400 max-w-md truncate"
+                      title={t.quote}
+                    >
+                      {t.quote}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          t.isApproved
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-yellow-500/20 text-yellow-400"
+                        }`}
+                      >
+                        {t.isApproved ? "Approved" : "Pending"}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex gap-2">
+                        {!t.isApproved && (
+                          <button
+                            onClick={() => handleStatusChange(t._id, true)}
+                            className="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 text-sm font-medium transition-colors"
+                          >
+                            Approve
+                          </button>
+                        )}
+                        {t.isApproved && (
+                          <button
+                            onClick={() => handleStatusChange(t._id, false)}
+                            className="px-3 py-1.5 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 text-sm font-medium transition-colors"
+                          >
+                            Hide
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(t._id)}
+                          className="px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 text-sm font-medium transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
