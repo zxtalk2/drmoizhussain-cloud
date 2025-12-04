@@ -80,11 +80,13 @@ export default function About() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             </div>
-            {/* Stats Overlay - Hidden on mobile */}
-            <div className="hidden md:block absolute -bottom-6 -left-6 lg:-bottom-8 lg:-left-8 bg-gradient-to-br from-primary to-purple-600 p-4 lg:p-6 rounded-2xl shadow-xl border border-white/10">
+            {/* Stats Overlay - Visible on all screens */}
+            <div className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 lg:-bottom-8 lg:-left-8 bg-gradient-to-br from-primary to-purple-600 p-3 md:p-4 lg:p-6 rounded-xl md:rounded-2xl shadow-xl border border-white/10">
               <div className="text-white">
-                <div className="text-3xl lg:text-4xl font-bold">45+</div>
-                <div className="text-xs lg:text-sm text-white/80 mt-1">
+                <div className="text-2xl md:text-3xl lg:text-4xl font-bold">
+                  45+
+                </div>
+                <div className="text-[10px] md:text-xs lg:text-sm text-white/80 mt-1">
                   Years of Excellence
                 </div>
               </div>
