@@ -2,9 +2,12 @@
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
+const ITEMS_PER_PAGE = 10;
+
 export default function AdminTestimonials() {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchTestimonials();
@@ -62,6 +65,12 @@ export default function AdminTestimonials() {
     }
   };
 
+  // Pagination calculations
+  const totalPages = Math.ceil(testimonials.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentTestimonials = testimonials.slice(startIndex, endIndex);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -74,11 +83,17 @@ export default function AdminTestimonials() {
     <div>
       <Toaster position="top-right" />
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Manage Testimonials</h1>
-        <p className="text-gray-400 mt-1">
-          Review and manage customer testimonials
-        </p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Manage Testimonials</h1>
+          <p className="text-gray-400 mt-1">
+            Review and manage customer testimonials
+          </p>
+        </div>
+        <div className="px-4 py-2 bg-[#1a1a1a] rounded-xl border border-white/10 text-sm">
+          Total:{" "}
+          <span className="text-primary font-bold">{testimonials.length}</span>
+        </div>
       </div>
 
       {testimonials.length === 0 ? (
@@ -99,85 +114,133 @@ export default function AdminTestimonials() {
           <p className="text-gray-400">No testimonials found.</p>
         </div>
       ) : (
-        <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-[#111] border-b border-white/10">
-                <tr>
-                  <th className="p-4 text-gray-400 font-medium text-sm">
-                    Name
-                  </th>
-                  <th className="p-4 text-gray-400 font-medium text-sm">
-                    Role
-                  </th>
-                  <th className="p-4 text-gray-400 font-medium text-sm">
-                    Message
-                  </th>
-                  <th className="p-4 text-gray-400 font-medium text-sm">
-                    Status
-                  </th>
-                  <th className="p-4 text-gray-400 font-medium text-sm">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {testimonials.map((t) => (
-                  <tr
-                    key={t._id}
-                    className="hover:bg-white/5 transition-colors"
-                  >
-                    <td className="p-4 font-semibold text-white">{t.name}</td>
-                    <td className="p-4 text-gray-400">{t.role}</td>
-                    <td
-                      className="p-4 text-gray-400 max-w-md truncate"
-                      title={t.quote}
+        <>
+          <div className="bg-[#1a1a1a] rounded-2xl border border-white/10 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-[#111] border-b border-white/10">
+                  <tr>
+                    <th className="p-4 text-gray-400 font-medium text-sm">
+                      Name
+                    </th>
+                    <th className="p-4 text-gray-400 font-medium text-sm">
+                      Role
+                    </th>
+                    <th className="p-4 text-gray-400 font-medium text-sm">
+                      Message
+                    </th>
+                    <th className="p-4 text-gray-400 font-medium text-sm">
+                      Status
+                    </th>
+                    <th className="p-4 text-gray-400 font-medium text-sm">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {currentTestimonials.map((t) => (
+                    <tr
+                      key={t._id}
+                      className="hover:bg-white/5 transition-colors"
                     >
-                      {t.quote}
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          t.isApproved
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-yellow-500/20 text-yellow-400"
+                      <td className="p-4 font-semibold text-white">{t.name}</td>
+                      <td className="p-4 text-gray-400">{t.role}</td>
+                      <td
+                        className="p-4 text-gray-400 max-w-md truncate"
+                        title={t.quote}
+                      >
+                        {t.quote}
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            t.isApproved
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-yellow-500/20 text-yellow-400"
+                          }`}
+                        >
+                          {t.isApproved ? "Approved" : "Pending"}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          {!t.isApproved && (
+                            <button
+                              onClick={() => handleStatusChange(t._id, true)}
+                              className="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 text-sm font-medium transition-colors"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {t.isApproved && (
+                            <button
+                              onClick={() => handleStatusChange(t._id, false)}
+                              className="px-3 py-1.5 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 text-sm font-medium transition-colors"
+                            >
+                              Hide
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDelete(t._id)}
+                            className="px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 text-sm font-medium transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-6">
+              <p className="text-sm text-gray-400">
+                Showing {startIndex + 1}-
+                {Math.min(endIndex, testimonials.length)} of{" "}
+                {testimonials.length}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-[#1a1a1a] rounded-xl border border-white/10 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/5 transition-colors"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-10 h-10 rounded-xl text-sm font-medium transition-colors ${
+                          currentPage === page
+                            ? "bg-primary text-white"
+                            : "bg-[#1a1a1a] border border-white/10 hover:bg-white/5"
                         }`}
                       >
-                        {t.isApproved ? "Approved" : "Pending"}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-2">
-                        {!t.isApproved && (
-                          <button
-                            onClick={() => handleStatusChange(t._id, true)}
-                            className="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 text-sm font-medium transition-colors"
-                          >
-                            Approve
-                          </button>
-                        )}
-                        {t.isApproved && (
-                          <button
-                            onClick={() => handleStatusChange(t._id, false)}
-                            className="px-3 py-1.5 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 text-sm font-medium transition-colors"
-                          >
-                            Hide
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDelete(t._id)}
-                          className="px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 text-sm font-medium transition-colors"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                        {page}
+                      </button>
+                    )
+                  )}
+                </div>
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-[#1a1a1a] rounded-xl border border-white/10 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/5 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

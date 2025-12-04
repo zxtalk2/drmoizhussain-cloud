@@ -29,10 +29,10 @@ export default function ThemeProvider({ children }) {
 
     // Apply to DOM immediately
     const root = document.documentElement;
-    if (initialTheme === "light") {
-      root.classList.add("light");
+    if (initialTheme === "dark") {
+      root.classList.add("dark");
     } else {
-      root.classList.remove("light");
+      root.classList.remove("dark");
     }
   }, []);
 
@@ -40,10 +40,10 @@ export default function ThemeProvider({ children }) {
   useEffect(() => {
     const root = document.documentElement;
 
-    if (theme === "light") {
-      root.classList.add("light");
+    if (theme === "dark") {
+      root.classList.add("dark");
     } else {
-      root.classList.remove("light");
+      root.classList.remove("dark");
     }
 
     localStorage.setItem("theme", theme);
