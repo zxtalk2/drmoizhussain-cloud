@@ -90,7 +90,10 @@ export default function ImageSlider() {
 
   if (loading) {
     return (
-      <div className="h-screen w-full bg-black flex flex-col items-center justify-center">
+      <div
+        className="h-screen w-full flex flex-col items-center justify-center"
+        style={{ backgroundColor: "var(--background)" }}
+      >
         <div className="loader">
           <p className="loader-text">Loading</p>
           <span className="load"></span>
