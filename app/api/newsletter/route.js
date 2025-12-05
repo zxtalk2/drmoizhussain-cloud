@@ -1,6 +1,8 @@
 import dbConnect from "../../../lib/db";
 import { Newsletter } from "../../../lib/models";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../lib/auth";
 
 export async function GET() {
   try {
@@ -45,6 +47,11 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");

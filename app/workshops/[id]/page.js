@@ -1,52 +1,72 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import Link from "next/link";
+import dbConnect from "../../../lib/db";
+import { Workshop } from "../../../lib/models";
+import { notFound } from "next/navigation";
 
-export default function WorkshopDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const [workshop, setWorkshop] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Dynamic Metadata Generation
+export async function generateMetadata({ params }) {
+  await dbConnect();
+  // In Next.js 15+, params is a Promise
+  const { id } = await params;
 
-  useEffect(() => {
-    const fetchWorkshop = async () => {
-      try {
-        const res = await fetch("/api/workshops");
-        const workshops = await res.json();
-        const found = workshops.find((w) => w._id === params.id);
+  try {
+    const workshop = await Workshop.findById(id);
+    if (!workshop) {
+      return {
+        title: "Workshop Not Found",
+      };
+    }
 
-        if (found) {
-          setWorkshop(found);
-        } else {
-          router.push("/workshops");
-        }
-      } catch (error) {
-        console.error("Failed to fetch workshop:", error);
-      } finally {
-        setLoading(false);
-      }
+    return {
+      title: `${workshop.title} | Dr. Moiz Hussain`,
+      description:
+        workshop.description?.slice(0, 160) ||
+        "Join this transformative workshop.",
+      openGraph: {
+        title: workshop.title,
+        description: workshop.description?.slice(0, 200),
+        url: `https://moizhussain.com/workshops/${id}`,
+      },
     };
+  } catch (error) {
+    return {
+      title: "Workshop | Dr. Moiz Hussain",
+    };
+  }
+}
 
-    fetchWorkshop();
-  }, [params.id, router]);
+export default async function WorkshopDetailPage({ params }) {
+  await dbConnect();
+  // In Next.js 15+, params is a Promise
+  const { id } = await params;
 
-  if (loading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: "var(--background)" }}
-      >
-        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+  let workshop;
+  try {
+    workshop = await Workshop.findById(id);
+  } catch (error) {
+    notFound();
   }
 
   if (!workshop) {
-    return null;
+    notFound();
   }
+
+  // Calculate JSON-LD Structured Data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: workshop.title,
+    description: workshop.description,
+    organizer: {
+      "@type": "Organization",
+      name: "The Institute of Mind Sciences",
+      url: "https://moizhussain.com",
+    },
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  };
 
   return (
     <div
@@ -57,6 +77,12 @@ export default function WorkshopDetailPage() {
       }}
     >
       <Navbar />
+
+      {/* Inject Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <div className="pt-32 pb-20 px-[5%]">
         <div className="max-w-4xl mx-auto">
