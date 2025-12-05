@@ -127,7 +127,9 @@ export default function ImageSlider() {
             alt={`Slide ${currentIndex + 1}`}
             fill
             className="object-cover opacity-60"
-            priority
+            priority={currentIndex === 0} // Only prioritize the first image
+            sizes="100vw"
+            quality={90}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         </motion.div>
