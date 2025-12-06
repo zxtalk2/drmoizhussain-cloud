@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import DeleteConfirmDialog from "../../../components/DeleteConfirmDialog";
 
 export default function ManageWorkshops() {
   const [workshops, setWorkshops] = useState([]);
@@ -10,6 +11,14 @@ export default function ManageWorkshops() {
     link: "",
   });
   const [editingId, setEditingId] = useState(null);
+
+  // Delete dialog state
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    itemId: null,
+    itemName: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchWorkshops();
@@ -53,12 +62,28 @@ export default function ManageWorkshops() {
       link: workshop.link || "",
     });
     setEditingId(workshop._id);
+    // Scroll to top to show the edit form
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this workshop?")) {
-      await fetch(`/api/workshops?id=${id}`, { method: "DELETE" });
+  const openDeleteDialog = (id, title) => {
+    setDeleteDialog({ isOpen: true, itemId: id, itemName: title });
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, itemId: null, itemName: "" });
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await fetch(`/api/workshops?id=${deleteDialog.itemId}`, {
+        method: "DELETE",
+      });
       fetchWorkshops();
+    } finally {
+      setIsDeleting(false);
+      closeDeleteDialog();
     }
   };
 
@@ -177,7 +202,9 @@ export default function ManageWorkshops() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(workshop._id)}
+                    onClick={() =>
+                      openDeleteDialog(workshop._id, workshop.title)
+                    }
                     className="px-4 py-2 bg-red-500/20 text-red-400 rounded text-sm hover:bg-red-500/30 transition-colors"
                   >
                     Delete
@@ -193,6 +220,17 @@ export default function ManageWorkshops() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Delete Workshop"
+        message="Are you sure you want to delete this workshop? This action cannot be undone."
+        itemName={deleteDialog.itemName}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }

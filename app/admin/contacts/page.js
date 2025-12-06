@@ -1,10 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import DeleteConfirmDialog from "../../../components/DeleteConfirmDialog";
 
 export default function AdminContactsPage() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Delete dialog state
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    itemId: null,
+    itemName: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchContacts();
@@ -36,17 +45,31 @@ export default function AdminContactsPage() {
     }
   };
 
-  const deleteContact = async (id) => {
-    if (!confirm("Are you sure you want to delete this message?")) return;
+  const openDeleteDialog = (id, name) => {
+    setDeleteDialog({
+      isOpen: true,
+      itemId: id,
+      itemName: `Message from ${name}`,
+    });
+  };
 
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, itemId: null, itemName: "" });
+  };
+
+  const deleteContact = async () => {
+    setIsDeleting(true);
     try {
-      await fetch(`/api/contact?id=${id}`, {
+      await fetch(`/api/contact?id=${deleteDialog.itemId}`, {
         method: "DELETE",
       });
       toast.success("Message deleted");
       fetchContacts();
     } catch (error) {
       toast.error("Failed to delete contact");
+    } finally {
+      setIsDeleting(false);
+      closeDeleteDialog();
     }
   };
 
@@ -150,7 +173,7 @@ export default function AdminContactsPage() {
                     {contact.read ? "Mark Unread" : "Mark Read"}
                   </button>
                   <button
-                    onClick={() => deleteContact(contact._id)}
+                    onClick={() => openDeleteDialog(contact._id, contact.name)}
                     className="px-4 py-2 bg-red-500/10 text-red-400 rounded-xl text-sm font-medium hover:bg-red-500/20 transition-colors"
                   >
                     Delete
@@ -166,6 +189,17 @@ export default function AdminContactsPage() {
           ))}
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={deleteContact}
+        title="Delete Message"
+        message="Are you sure you want to delete this message? This action cannot be undone."
+        itemName={deleteDialog.itemName}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }

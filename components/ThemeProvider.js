@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext({
-  theme: "light",
+  theme: "dark",
   toggleTheme: () => {},
 });
 
@@ -16,13 +16,13 @@ export const useTheme = () => {
 };
 
 export default function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   // Initialize and apply theme immediately on client-side
   useEffect(() => {
-    // Get initial theme
+    // Get initial theme (default to dark if not set)
     const savedTheme = localStorage.getItem("theme");
-    const initialTheme = savedTheme || "light";
+    const initialTheme = savedTheme || "dark";
 
     // Set state
     setTheme(initialTheme);

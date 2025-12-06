@@ -7,7 +7,8 @@ import { authOptions } from "../../../lib/auth";
 export async function GET() {
   try {
     await dbConnect();
-    const slides = await Slider.find({ active: true }).sort({ order: 1 });
+    // Sort by createdAt descending so newest slides appear first
+    const slides = await Slider.find({ active: true }).sort({ createdAt: -1 });
     return NextResponse.json(slides);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

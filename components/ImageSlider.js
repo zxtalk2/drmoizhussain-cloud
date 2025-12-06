@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const images = [
+  "/slider-main.png", // New Cosmic Meditation Image
   "https://moizhussain.com/wp-content/uploads/2019/03/experience-image.png",
   "https://moizhussain.com/wp-content/uploads/2020/01/2.jpg",
   "https://moizhussain.com/wp-content/uploads/2020/01/3.jpg",
@@ -19,65 +20,50 @@ export default function ImageSlider() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchSlides = async () => {
       try {
-        const res = await fetch("/api/slider");
-        const data = await res.json();
-        if (data && data.length > 0) {
-          // Show first slide immediately
-          setSlides([data[0]]);
-          setLoading(false);
+        const res = await fetch("/api/slider", { cache: "no-store", signal });
+        if (!res.ok) throw new Error("Failed to fetch slides");
 
-          // Load remaining slides in background
-          if (data.length > 1) {
-            setTimeout(() => {
-              setSlides(data);
-            }, 100);
-          }
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setSlides(data);
         } else {
-          // Fallback to default images if no data
-          const fallbackSlides = images.map((url, index) => ({
+          // Only show fallback if no data found in DB
+          console.log("No slides found in DB, using fallback");
+          const fallbackSlides = images.slice(1).map((url) => ({
             imageUrl: url,
             title: "Unlock Your True Potential",
             description:
-              "Expert consultation for personal and professional growth with Dr. Moiz Hussain. Discover the power of your mind.",
+              "Embark on a journey of self-discovery and master the art of mind sciences with Dr. Moiz Hussain.",
           }));
-
-          // Show first fallback slide immediately
-          setSlides([fallbackSlides[0]]);
-          setLoading(false);
-
-          // Load remaining fallback slides
-          if (fallbackSlides.length > 1) {
-            setTimeout(() => {
-              setSlides(fallbackSlides);
-            }, 100);
-          }
+          setSlides(fallbackSlides);
         }
       } catch (error) {
+        if (error.name === "AbortError") return;
         console.error("Failed to fetch slides:", error);
-        // Fallback on error
-        const fallbackSlides = images.map((url, index) => ({
+        // Fallback logic on error
+        const fallbackSlides = images.slice(1).map((url) => ({
           imageUrl: url,
           title: "Unlock Your True Potential",
           description:
-            "Expert consultation for personal and professional growth with Dr. Moiz Hussain. Discover the power of your mind.",
+            "Embark on a journey of self-discovery and master the art of mind sciences with Dr. Moiz Hussain.",
         }));
-
-        // Show first fallback slide immediately
-        setSlides([fallbackSlides[0]]);
-        setLoading(false);
-
-        // Load remaining fallback slides
-        if (fallbackSlides.length > 1) {
-          setTimeout(() => {
-            setSlides(fallbackSlides);
-          }, 100);
+        setSlides(fallbackSlides);
+      } finally {
+        if (!signal.aborted) {
+          setLoading(false);
         }
       }
     };
 
     fetchSlides();
+
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {

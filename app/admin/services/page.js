@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import DeleteConfirmDialog from "../../../components/DeleteConfirmDialog";
 
 export default function ManageServices() {
   const [services, setServices] = useState([]);
@@ -10,6 +11,14 @@ export default function ManageServices() {
     description: "",
     category: "General",
   });
+
+  // Delete dialog state
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    itemId: null,
+    itemName: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchServices();
@@ -47,11 +56,18 @@ export default function ManageServices() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this service?")) return;
+  const openDeleteDialog = (id, title) => {
+    setDeleteDialog({ isOpen: true, itemId: id, itemName: title });
+  };
 
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, itemId: null, itemName: "" });
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
     try {
-      const res = await fetch(`/api/services?id=${id}`, {
+      const res = await fetch(`/api/services?id=${deleteDialog.itemId}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -62,6 +78,9 @@ export default function ManageServices() {
       }
     } catch (error) {
       toast.error("Error deleting service");
+    } finally {
+      setIsDeleting(false);
+      closeDeleteDialog();
     }
   };
 
@@ -195,7 +214,7 @@ export default function ManageServices() {
                 </span>
               </div>
               <button
-                onClick={() => handleDelete(service._id)}
+                onClick={() => openDeleteDialog(service._id, service.title)}
                 className="px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors flex items-center gap-2"
               >
                 <svg
@@ -217,6 +236,17 @@ export default function ManageServices() {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Delete Service"
+        message="Are you sure you want to delete this service? This action cannot be undone."
+        itemName={deleteDialog.itemName}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }

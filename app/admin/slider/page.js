@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import DeleteConfirmDialog from "../../../components/DeleteConfirmDialog";
 
 export default function AdminSliderPage() {
   const [slides, setSlides] = useState([]);
@@ -11,6 +12,14 @@ export default function AdminSliderPage() {
     imageUrl: "",
   });
   const [editId, setEditId] = useState(null);
+
+  // Delete dialog state
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    itemId: null,
+    itemName: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchSlides();
@@ -64,16 +73,26 @@ export default function AdminSliderPage() {
     setEditId(slide._id);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this slide?")) return;
+  const openDeleteDialog = (id, title) => {
+    setDeleteDialog({ isOpen: true, itemId: id, itemName: title });
+  };
 
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, itemId: null, itemName: "" });
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
     try {
-      await fetch(`/api/slider?id=${id}`, {
+      await fetch(`/api/slider?id=${deleteDialog.itemId}`, {
         method: "DELETE",
       });
       fetchSlides();
     } catch (error) {
       console.error("Failed to delete slide", error);
+    } finally {
+      setIsDeleting(false);
+      closeDeleteDialog();
     }
   };
 
@@ -221,7 +240,7 @@ export default function AdminSliderPage() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(slide._id)}
+                    onClick={() => openDeleteDialog(slide._id, slide.title)}
                     className="px-4 py-1 bg-red-500/20 text-red-400 rounded text-sm hover:bg-red-500/30 transition-colors"
                   >
                     Delete
@@ -232,6 +251,17 @@ export default function AdminSliderPage() {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Delete Slide"
+        message="Are you sure you want to delete this slide? This action cannot be undone."
+        itemName={deleteDialog.itemName}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }

@@ -1,10 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
-import { saveAs } from "file-saver";
+import DeleteConfirmDialog from "../../../components/DeleteConfirmDialog";
+import SuccessDialog from "../../../components/SuccessDialog";
 
 export default function AdminNewsletterPage() {
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Delete dialog state
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    itemId: null,
+    itemName: "",
+  });
+  const [successDialog, setSuccessDialog] = useState({
+    isOpen: false,
+    message: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchSubscribers();
@@ -22,17 +35,40 @@ export default function AdminNewsletterPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this subscriber?")) return;
+  const openDeleteDialog = (id, email) => {
+    setDeleteDialog({ isOpen: true, itemId: id, itemName: email });
+  };
 
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, itemId: null, itemName: "" });
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
     try {
-      await fetch(`/api/newsletter?id=${id}`, {
+      await fetch(`/api/newsletter?id=${deleteDialog.itemId}`, {
         method: "DELETE",
       });
       fetchSubscribers();
     } catch (error) {
       console.error("Failed to delete subscriber", error);
+    } finally {
+      setIsDeleting(false);
+      closeDeleteDialog();
     }
+  };
+
+  // Native download helper function
+  const downloadFile = (content, filename, mimeType) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const exportEmails = (format = "txt") => {
@@ -66,8 +102,7 @@ export default function AdminNewsletterPage() {
           break;
       }
 
-      const blob = new Blob([content], { type: mimeType });
-      saveAs(blob, filename);
+      downloadFile(content, filename, mimeType);
     } catch (error) {
       console.error("Export failed:", error);
       alert("Failed to export file. Please try again.");
@@ -77,7 +112,10 @@ export default function AdminNewsletterPage() {
   const copyAllEmails = () => {
     const emails = subscribers.map((sub) => sub.email).join(", ");
     navigator.clipboard.writeText(emails);
-    alert("✅ All emails copied to clipboard!");
+    setSuccessDialog({
+      isOpen: true,
+      message: "All subscriber emails have been copied to your clipboard.",
+    });
   };
 
   if (loading) {
@@ -206,7 +244,9 @@ export default function AdminNewsletterPage() {
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <button
-                      onClick={() => handleDelete(subscriber._id)}
+                      onClick={() =>
+                        openDeleteDialog(subscriber._id, subscriber.email)
+                      }
                       className="px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs hover:bg-red-500/30 transition-colors"
                     >
                       Delete
@@ -218,6 +258,25 @@ export default function AdminNewsletterPage() {
           </table>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Delete Subscriber"
+        message="Are you sure you want to delete this subscriber? This action cannot be undone."
+        itemName={deleteDialog.itemName}
+        isDeleting={isDeleting}
+      />
+
+      {/* Success Dialog */}
+      <SuccessDialog
+        isOpen={successDialog.isOpen}
+        onClose={() => setSuccessDialog({ ...successDialog, isOpen: false })}
+        title="Emails Copied!"
+        message={successDialog.message}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
+import DeleteConfirmDialog from "../../../components/DeleteConfirmDialog";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -8,6 +9,14 @@ export default function AdminTestimonials() {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Delete dialog state
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    itemId: null,
+    itemName: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchTestimonials();
@@ -46,13 +55,27 @@ export default function AdminTestimonials() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this testimonial?")) return;
+  const openDeleteDialog = (id, name) => {
+    setDeleteDialog({
+      isOpen: true,
+      itemId: id,
+      itemName: `Testimonial by ${name}`,
+    });
+  };
 
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, itemId: null, itemName: "" });
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
     try {
-      const res = await fetch(`/api/admin/testimonials?id=${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `/api/admin/testimonials?id=${deleteDialog.itemId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (res.ok) {
         toast.success("Testimonial deleted");
@@ -62,6 +85,9 @@ export default function AdminTestimonials() {
       }
     } catch (error) {
       toast.error("Error deleting testimonial");
+    } finally {
+      setIsDeleting(false);
+      closeDeleteDialog();
     }
   };
 
@@ -193,7 +219,7 @@ export default function AdminTestimonials() {
                             </button>
                           )}
                           <button
-                            onClick={() => handleDelete(t._id)}
+                            onClick={() => openDeleteDialog(t._id, t.name)}
                             className="px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 text-sm font-medium transition-colors"
                           >
                             Delete
@@ -254,6 +280,17 @@ export default function AdminTestimonials() {
           )}
         </>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Delete Testimonial"
+        message="Are you sure you want to delete this testimonial? This action cannot be undone."
+        itemName={deleteDialog.itemName}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }
