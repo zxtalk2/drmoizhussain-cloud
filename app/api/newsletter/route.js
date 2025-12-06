@@ -4,8 +4,30 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../lib/auth";
 
+// Helper function to validate email
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Helper function to sanitize input
+function sanitizeInput(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .trim()
+    .toLowerCase();
+}
+
+// PROTECTED: Only admin can view all subscribers
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const subscribers = await Newsletter.find({}).sort({ createdAt: -1 });
     return NextResponse.json(subscribers);
@@ -17,7 +39,16 @@ export async function GET() {
 export async function POST(req) {
   try {
     await dbConnect();
-    const { email } = await req.json();
+    const body = await req.json();
+    const email = sanitizeInput(body.email);
+
+    // Validate email
+    if (!email || !isValidEmail(email)) {
+      return NextResponse.json(
+        { error: "Please provide a valid email address" },
+        { status: 400 }
+      );
+    }
 
     // Check if email already exists
     const existing = await Newsletter.findOne({ email });
